@@ -6,7 +6,7 @@ class Spell:
         self.name = name
         self.cost = cost
         self.dmg = dmg
-        self.type = spell_type
+        self.spell_type = spell_type
 
     def generate_damage(self):
         low = 0

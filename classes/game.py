@@ -29,7 +29,7 @@ class Person:
         return random.randrange(self.atkl, self.atkh)
 
     def heal(self, dmg):
-        self.hp -= dmg
+        self.hp += dmg
         if self.hp < 0:
             self.hp = 0
         return self.hp
