@@ -1,5 +1,6 @@
 import random
-
+from .magic import Spell
+import pprint
 
 class bcolors:
     HEADER = '\033[95m'
@@ -18,8 +19,8 @@ class Person:
         self.hp = hp
         self.maxmp = mp
         self.mp = mp
-        self.atkl = atk - 10
-        self.atkh = atk + 10
+        self.atkl = 0
+        self.atkh = atk
         self.df = df
         self.magic = magic
         self.actions = ["Attack", "Magic"]
@@ -65,5 +66,5 @@ class Person:
         i = 1
         print(bcolors.OKBLUE + bcolors.BOLD + "Magic" + bcolors.ENDC)
         for spell in self.magic:
-            print(str(i) + ":", spell["name"], "(cost:", str(spell["cost"]) + ")")
+            print(str(i) + ":", spell.name, "(cost:", str(spell.cost) + ")")
             i += 1
