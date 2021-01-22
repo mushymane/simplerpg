@@ -1,11 +1,20 @@
 from classes.game import Person, bcolors
+from classes.magic import Spell
 
-magic = [{"name": "Fire", "cost": 10, "dmg": 110},
-         {"name": "Thunder", "cost": 12, "dmg": 124},
-         {"name": "Blizzard", "cost": 10, "dmg": 100}]
+# Normal Spellbook
+fire = Spell("Fire", 9, 38, "black")
+blizzard = Spell("Blizzard", 8, 35, "black")
+thunder = Spell("Thunder", 10, 40, "black")
+barrage = Spell("Ice barrage", 15, 50, "black")
+blood = Spell("Blood barrage", 14, 45, "black")
 
-player = Person(460, 65, 60, 34, magic)
-enemy = Person(1200, 65, 45, 25, magic)
+# Other Spellbook
+cure = Spell("Cure", 10, 20, "white")
+cura = Spell("Cura", 15, 35, "white")
+
+# Instantiate characters
+player = Person(99, 99, 99, 99, [fire, blizzard, thunder, barrage, blood, cure, cura])
+enemy = Person(1200, 65, 45, 25, [])
 
 running = True
 i = 0
@@ -48,10 +57,10 @@ while running:
     print("----------------------")
     print("Enemy HP:", bcolors.FAIL + str(enemy.get_hp()) + "/" + str(enemy.get_max_hp()) + bcolors.ENDC + "\n")
     print("Player HP:", bcolors.OKGREEN + str(player.get_hp()) + "/" + str(player.get_max_hp()) + bcolors.ENDC)
-    print("Player MP:", bcolors.OKBLUE + str(player.get_mp()) + "/" + str(player.get_max_mp())+ bcolors.ENDC + "\n")
+    print("Player MP:", bcolors.OKBLUE + str(player.get_mp()) + "/" + str(player.get_max_mp()) + bcolors.ENDC + "\n")
 
     if enemy.get_hp() == 0:
-        print(bcolors.OKGREEN + "You have defeated the enemy." + bcolors.ENDC)
+        print(bcolors.OKGREEN + "You have slain the enemy." + bcolors.ENDC)
         running = False
     elif player.get_hp() == 0:
         print(bcolors.FAIL + "You have been defeated!" + bcolors.ENDC)
