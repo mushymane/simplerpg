@@ -1,5 +1,6 @@
 from classes.game import Person, bcolors
 from classes.magic import Spell
+from classes.inventory import Item
 
 # Normal Spellbook
 fire = Spell("Fire", 9, 38, "black")
@@ -12,9 +13,24 @@ blood = Spell("Blood barrage", 14, 45, "black")
 cure = Spell("Cure", 10, 20, "white")
 cura = Spell("Cura", 15, 35, "white")
 
+
+# Create items
+karambwan = Item("Karambwan", "food", "Heals 18 HP", 18)
+angler = Item("Anglerfish", "food", "Heals 22 HP", 22)
+brew = Item("Sarabrew", "potion", "Heals 64 HP", 64)
+restore = Item("Restore", "potion", "Restores 32 MP", 32)
+sanfew = Item("Sanfew", "elixir", "Restores 33 HP and MP", 33)
+
+cracker = Item("Cracker", "attack", "Deals 30 damage", 30)
+flowers = Item("Flowers", "attack", "Deals 10 damage", 10)
+
+
 # Instantiate characters
-player = Person(99, 99, 99, 99, [fire, blizzard, thunder, barrage, blood, cure, cura])
-enemy = Person(1200, 65, 45, 25, [])
+player_spells = [fire, blizzard, thunder, barrage, blood, cure, cura]
+player_items = [karambwan, angler, brew, restore, sanfew, cracker, flowers]
+
+player = Person(99, 99, 99, 99, player_spells, player_items)
+enemy = Person(1200, 65, 45, 25, [], [])
 
 running = True
 i = 0
@@ -35,6 +51,10 @@ while running:
         player.choose_magic()
         magic_choice = int(input("Choose a spell: ")) - 1
 
+        # goes back on the menu
+        if magic_choice == -1:
+            continue
+
         spell = player.magic[magic_choice]
         magic_dmg = spell.generate_damage()
 
@@ -52,6 +72,20 @@ while running:
         elif spell.spell_type == "black":
             enemy.take_damage(magic_dmg)
             print(bcolors.OKBLUE + "\n" + spell.name + " dealt", str(magic_dmg), "damage" + bcolors.ENDC)
+    elif index == 2:
+        player.choose_item()
+        item_choice = int(input("Choose item: ")) - 1
+
+        # goes back on the menu
+        if item_choice == -1:
+            continue
+
+        item = player.items[item_choice]
+
+        if item.item_type == "potion":
+            player.heal(item.prop)
+            print(bcolors.OKGREEN + "\n" + item.name + " heals for", str(item.prop), "HP" + bcolors.ENDC)
+
 
     enemy_choice = 1
 
