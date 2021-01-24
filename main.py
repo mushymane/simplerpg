@@ -19,7 +19,8 @@ karambwan = Item("Karambwan", "food", "Heals 18 HP", 18)
 angler = Item("Anglerfish", "food", "Heals 22 HP", 22)
 brew = Item("Sarabrew", "potion", "Heals 64 HP", 64)
 restore = Item("Restore", "potion", "Restores 32 MP", 32)
-sanfew = Item("Sanfew", "elixir", "Restores 33 HP and MP", 33)
+serum = Item("Serum", "elixir", "Fully restores HP and MP", 99)
+superserum = Item("Super serum", "elixir", "Fully restores HP and MP of all party members", 99)
 
 cracker = Item("Cracker", "attack", "Deals 30 damage", 30)
 flowers = Item("Flowers", "attack", "Deals 10 damage", 10)
@@ -27,7 +28,15 @@ flowers = Item("Flowers", "attack", "Deals 10 damage", 10)
 
 # Instantiate characters
 player_spells = [fire, blizzard, thunder, barrage, blood, cure, cura]
-player_items = [karambwan, angler, brew, restore, sanfew, cracker, flowers]
+# angler, brew, restore, serum, superserum, cracker, flowers]
+player_items = [{"item": karambwan, "quantity": 10},
+                {"item": angler, "quantity": 20},
+                {"item": brew, "quantity": 30},
+                {"item": restore, "quantity": 30},
+                {"item": serum, "quantity": 5},
+                {"item": superserum, "quantity": 3},
+                {"item": cracker, "quantity": 5},
+                {"item": flowers, "quantity": 5}]
 
 player = Person(99, 99, 99, 99, player_spells, player_items)
 enemy = Person(1200, 65, 45, 25, [], [])
@@ -68,7 +77,7 @@ while running:
 
         if spell.spell_type == "white":
             player.heal(magic_dmg)
-            print(bcolors.OKBLUE + "\n" + spell.name + " heals for", str(magic_dmg), "HP." + bcolors.ENDC)
+            print(bcolors.OKBLUE + "\n" + spell.name + " heals for", str(magic_dmg), "HP" + bcolors.ENDC)
         elif spell.spell_type == "black":
             enemy.take_damage(magic_dmg)
             print(bcolors.OKBLUE + "\n" + spell.name + " dealt", str(magic_dmg), "damage" + bcolors.ENDC)
@@ -80,12 +89,24 @@ while running:
         if item_choice == -1:
             continue
 
-        item = player.items[item_choice]
+        item = player.items[item_choice]["item"]
+
+        if player.items[item_choice]["quantity"] == 0:
+            print(bcolors.FAIL + "\n" + "You don't have any more of that item!" + bcolors.ENDC)
+            continue
+
+        player.items[item_choice]["quantity"] -= 1
 
         if item.item_type == "potion":
             player.heal(item.prop)
             print(bcolors.OKGREEN + "\n" + item.name + " heals for", str(item.prop), "HP" + bcolors.ENDC)
-
+        elif item.item_type == "elixir":
+            player.hp = player.maxhp
+            player.mp = player.maxmp
+            print(bcolors.OKGREEN + "\n" + item.name + " fully restores HP and MP" + bcolors.ENDC)
+        elif item.item_type == "attack":
+            enemy.take_damage(item.prop)
+            print(bcolors.FAIL + "\n" + item.name + " deals", str(item.prop), "damage" + bcolors.ENDC)
 
     enemy_choice = 1
 
