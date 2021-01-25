@@ -45,10 +45,13 @@ player2 = Person("Sir Tiffy:   ", 99, 99, 99, 99, player_spells, player_items)
 player3 = Person("Bob:         ", 99, 99, 99, 99, player_spells, player_items)
 player4 = Person("Nieve:       ", 99, 99, 99, 99, player_spells, player_items)
 
-enemy1 = Person("Zuk:        ", 1200, 1200, 80, 50, [], [])
-enemy2 = Person("Jad:        ", 250, 2500, 50, 30, [], [])
-enemy3 = Person("HurKot:     ", 90, 90, 18, 0, [], [])
-enemy4 = Person("MejJak:     ", 80, 80, 10, 0, [], [])
+enemy_boss_spells = [fire, barrage, blood, cura]
+enemy_spells = [fire, blood, cure]
+
+enemy1 = Person("Zuk:        ", 1200, 1200, 80, 50, enemy_boss_spells, [])
+enemy2 = Person("Jad:        ", 250, 2500, 50, 30, enemy_boss_spells, [])
+enemy3 = Person("HurKot:     ", 90, 90, 18, 0, enemy_spells, [])
+enemy4 = Person("MejJak:     ", 80, 80, 10, 0, enemy_spells, [])
 
 players = [player1, player2, player3, player4]
 enemies = [enemy1, enemy2, enemy3, enemy4]
@@ -155,17 +158,7 @@ while running:
                     print(enemyname + " has died.")
                     del enemies[enemy]
 
-    
-
-    enemy_choice = 1
-
-    target = random.randrange(0, 4)
-    enemy_dmg = enemies[0].generate_damage()
-    players[target].take_damage(enemy_dmg)
-    targetname = re.sub(r'[^a-zA-Z ]+', '', players[target].name).strip()
-
-    print("\n" + targetname + " is hit for", str(enemy_dmg), "damage!")
-
+    # Check if battle is over
     defeated_enemies = 0
     defeated_players = 0
 
@@ -176,9 +169,49 @@ while running:
         if player.get_hp() == 0:
             defeated_players += 1
 
+    # Check battle outcome
     if defeated_enemies == 4:
         print(bcolors.OKGREEN + "You have slain the enemy." + bcolors.ENDC)
         running = False
     elif defeated_players == 4:
         print(bcolors.FAIL + "You have been defeated!" + bcolors.ENDC)
         running = False
+
+    print("\n")
+    # Enemy attack phase
+    for enemy in enemies:
+        enemyname = re.sub(r'[^a-zA-Z ]+', '', enemy.name).strip()
+        enemy_choice = random.randrange(0, 2)
+
+        if enemy_choice == 0:
+            # Enemy chose to attack
+            target = random.randrange(0, len(players))
+            enemy_dmg = enemy.generate_damage()
+            players[target].take_damage(enemy_dmg)
+
+            targetname = re.sub(r'[^a-zA-Z ]+', '', players[target].name).strip()
+            print("\n" + targetname + " is hit for", str(enemy_dmg), "damage!")
+
+            if players[target].get_hp() == 0:
+                print(targetname + " has died.")
+                del players[target]
+        elif enemy_choice == 1:
+            spell, magic_dmg = enemy.choose_enemy_spell()
+            enemy.reduce_mp(spell.cost)
+
+            if spell.spell_type == "white":
+                enemy.heal(magic_dmg)
+                print(bcolors.OKBLUE + spell.name + " heals " + enemyname + " for", str(magic_dmg), "HP"
+                      + bcolors.ENDC)
+            elif spell.spell_type == "black":
+                target = random.randrange(0, len(players))
+                players[target].take_damage(magic_dmg)
+
+                targetname = re.sub(r'[^a-zA-Z ]+', '', players[target].name).strip()
+                print(bcolors.OKBLUE + "\n" + enemyname + "'s " + spell.name + " dealt", str(magic_dmg), "damage to " +
+                      targetname + bcolors.ENDC)
+                if players[target].get_hp() == 0:
+                    print(targetname + " has died.")
+                    del players[target]
+
+            # print("Enemy cast", spell.name, "which dealt", magic_dmg, "damage!")
